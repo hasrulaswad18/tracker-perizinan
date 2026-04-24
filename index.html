@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tracker Perizinan — Cek Status Izin</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="page">
+
+  <div class="app-header">
+    <div class="app-logo">Tracker Perizinan</div>
+    <div class="app-sub">Sistem pelacakan proses izin secara transparan &amp; real-time</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('publik',this)">Cek Status (Publik)</button>
+    <button class="tab" onclick="showTab('admin',this)">Panel Petugas</button>
+  </div>
+
+  <!-- PUBLIK -->
+  <div id="tab-publik">
+    <div class="publik-wrap">
+      <div class="card">
+        <div class="card-title">Cek Status Perizinan</div>
+        <div class="card-sub">Masukkan kode resi yang diberikan petugas untuk melacak proses izin Anda.</div>
+        <div class="search-row">
+          <input class="resi-input" id="input-resi" placeholder="Contoh: IZN-A3F7K2" maxlength="12"
+            oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')cekResi()"/>
+          <button class="btn-primary" onclick="cekResi()">Lacak</button>
+        </div>
+        <div class="not-found" id="not-found">
+          Kode resi tidak ditemukan. Pastikan kode sudah benar atau hubungi petugas yang menangani pengajuan Anda.
+        </div>
+      </div>
+
+      <div class="card result-card" id="result-card">
+        <div class="result-header">
+          <div>
+            <div class="result-nama" id="res-nama"></div>
+            <div class="result-meta" id="res-meta"></div>
+          </div>
+          <span class="badge" id="res-badge"></span>
+        </div>
+        <div class="steps" id="res-steps"></div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Progress keseluruhan</span><span id="res-pct"></span></div>
+          <div class="prog-bg"><div class="prog-bar" id="res-bar"></div></div>
+        </div>
+        <div class="info-rows" id="res-info"></div>
+        <div class="qr-section">
+          <div class="qr-title">QR Code Resi Anda</div>
+          <div id="qr-pub"></div>
+          <div class="qr-sub">Simpan screenshot ini untuk memudahkan pengecekan berikutnya</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="tab-admin" style="display:none">
+    <div class="admin-topbar">
+      <div class="section-title">Daftar Pengajuan Izin</div>
+      <button class="btn-outline" onclick="openForm()">+ Tambah Izin</button>
+    </div>
+    <div class="live-badge"><span class="pulse"></span> Pembaruan real-time aktif</div>
+    <div class="stats" id="stats"></div>
+    <div class="filter-row">
+      <button class="chip active" onclick="setFilter('semua',this)">Semua</button>
+      <button class="chip" onclick="setFilter('Proses',this)">Proses</button>
+      <button class="chip" onclick="setFilter('Revisi',this)">Revisi</button>
+      <button class="chip" onclick="setFilter('Selesai',this)">Selesai</button>
+    </div>
+    <div id="admin-list"></div>
+  </div>
+
+  <div class="footer">Tracker Perizinan &mdash; Transparansi layanan publik</div>
+</div>
+
+<!-- QR Modal -->
+<div class="overlay" id="qr-overlay">
+  <div class="modal">
+    <h3>Kode Resi &amp; QR Code</h3>
+    <div class="modal-sub" id="modal-nama"></div>
+    <div class="modal-resi" id="modal-resi"></div>
+    <div id="qr-modal-box"></div>
+    <div class="modal-hint">Berikan kode ini kepada pemohon agar dapat melacak status izin secara mandiri kapan saja.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeQR()">Tutup</button>
+      <button class="btn-primary" onclick="downloadQR()">Simpan QR</button>
+    </div>
+  </div>
+</div>
+
+<!-- Form Modal -->
+<div class="form-overlay" id="form-overlay">
+  <div class="form-modal">
+    <h3>Tambah Pengajuan Izin</h3>
+    <div class="form-row"><label>Nama izin / keperluan</label><input id="f-nama" placeholder="Contoh: IMB Gedung Kantor"/></div>
+    <div class="form-row"><label>Jenis izin</label>
+      <select id="f-jenis">
+        <option>IMB</option><option>SIUP</option><option>HO</option><option>AMDAL</option><option>Lainnya</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Nama pemohon</label><input id="f-pemohon" placeholder="Nama lengkap / nama perusahaan"/></div>
+    <div class="form-row"><label>Instansi pemroses</label><input id="f-instansi" placeholder="Contoh: Dinas PUPR"/></div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeForm()">Batal</button>
+      <button class="btn-primary" onclick="saveIzin()">Simpan &amp; Buat Resi</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/qr.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
